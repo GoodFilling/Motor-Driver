@@ -8,11 +8,42 @@
 
 #ifndef MOTOR_H
 #define MOTOR_H
+#include <algorithm>
+#include <math.h>
+#include <Arduino.h>
+#include <iostream>
+using namespace std;
 
 enum Direction {
   FORWARD, BACKWARD
 };
 
+class PWM {
+  public:
+    int PWMFreq; 
+    int PWMChannel1;
+    int PWMChannel2;
+    int PWMResolution;
+    int MAX_DUTY_CYCLE;
+
+    PWM(int channel1 = 0, int channel2 = 1, int freq = 50, int resolution = 10) {
+      PWMChannel1 = channel1;//TODO: decide if this should be standardized to flip one of the bits (In1 for ex.) or should it change based on motor direction?
+      PWMChannel2 = channel2;//TODO: decide if this should be standardized to flip one of the bits (In1 for ex.) or should it change based on motor direction?
+
+      PWMFreq = freq; // default 50 hz (50)
+      PWMResolution = resolution; //bit resolution for PWM, up to 16 bits
+      MAX_DUTY_CYCLE = (int)(pow(2,resolution) - 1);
+      ledcSetup(PWMChannel1, PWMFreq, PWMResolution);//initialize PWM on pin
+      ledcSetup(PWMChannel2, PWMFreq, PWMResolution);//initialize PWM on pin
+
+      //ledcAttachPin(LEDPin, PWMChannel); //Moved to motor constructor       
+    }
+    void updateDutyCycle(int dutyCycle);
+    void updateDutyCycle(int dutyCycle, int index);
+    void print();
+};
+
+/*
 class PWM {
   public:
     int PWMFreq; 
@@ -23,19 +54,147 @@ class PWM {
     void updateDutyCycle(int dutyCycle);
     void print();
 };
+*/
 
 class Motor {
   public:
-    Motor(int EP, int I1P, int I2P);//enable pin, In1Pin, In2Pin
-    void print(string str);
+    int In1Pin;
+    int In2Pin;
+    PWM pwm;
+    Direction dir;//holds pin data for motors, not hard coded/initialized here so it can be set/edited in main
+    int dutyCycle;
+
+    Motor(int I1P, int I2P, PWM pwm_in) {
+      In1Pin = I1P;
+      In2Pin = I2P;
+      pwm = pwm_in;
+      dir = FORWARD;
+      ledcAttachPin(In1Pin, pwm.PWMChannel1);
+      ledcAttachPin(In2Pin, pwm.PWMChannel2);
+    };//Motor Constructor
+
+    void print();
+    void enable();
+    void disable();
+    void setPWM(float dutyCycle_Float);
+    void setDirection(Direction dir);
+    void toggleDirection();
+};//class Motor    
+
+/*
+class Motor {
+  public:
+    Motor(int EP, int I1P, int I2P, PWM pwm);//enable pin, In1Pin, In2Pin, PWM object
+    void print();
     void enable(int motor);
     void disable(int motor);
     void setPWM(unsigned int PWM);
     void setDirection(int motor, int dir);
-    void print();
 
+};
+*/
+void PWM::updateDutyCycle(int dutyCycle) {
+  //base function to set both duty cycles
+
+  //clean duty cycle: between 0 and MAX_DUTY_CYCLE
+  dutyCycle = min(max(dutyCycle,0), this->MAX_DUTY_CYCLE);
+  ledcWrite(this->PWMChannel1, dutyCycle);
+  ledcWrite(this->PWMChannel2, dutyCycle);
+
+  cout << "Setting Duty Cycle to: " << dutyCycle << " of " << MAX_DUTY_CYCLE <<endl;
+};
+
+void PWM::updateDutyCycle(int dutyCycle, int index) {
+  //Overload to allow for indexing the 2 PWM signals
+
+  //clean duty cycle: between 0 and MAX_DUTY_CYCLE
+  dutyCycle = min(max(dutyCycle,0), this->MAX_DUTY_CYCLE);
+  if (index == 0) {
+    ledcWrite(this->PWMChannel1, dutyCycle);
+
+  } else {
+    ledcWrite(this->PWMChannel2, dutyCycle);
+  }
+
+  cout << "Setting Duty Cycle "<< index <<  " to: " << dutyCycle << " of " << MAX_DUTY_CYCLE <<endl;
 };
 
 
+void PWM::print() {
+    cout << "Freq: " << this->PWMFreq << endl;
+    cout << "Channel1: " << this->PWMChannel1 << endl;
+    cout << "Channel1: " << this->PWMChannel2 << endl;
+
+    cout << "Resolution: " << this->PWMResolution << endl;
+    cout << "Max Duty Cycle: " << this->MAX_DUTY_CYCLE << endl;
+}
+
+void Motor::print() {
+    cout << "In1Pin: " << this->In1Pin << endl;
+    cout << "In2Pin " << this->In2Pin << endl;
+    cout << "Direction " << this->dir << endl;
+    this->pwm.print();
+};
+
+void Motor::enable() {
+  //   turn on motor (wrapper function for setDirection)
+  this->setDirection(this->dir);  
+  //digitalWrite(this->In1Pin, HIGH); //enable motor 1 (index 0)
+};//Enable
+
+void Motor::disable() {
+  //disables the motor
+  this->pwm.updateDutyCycle(0);
+
+  //digitalWrite(this->In1Pin, LOW); //disable motor
+  //digitalWrite(this->In2Pin, LOW); //disable motor
+
+};//Disable()
+
+void Motor::setPWM(float dutyCycle_Float) {
+  //sets the PWM signal for the given motor.  
+  //dutyCycle_Float is a float between 0.0 and 100.0 that controls the speed of the motor as a % duty cycle
+  //pwm.updateDutyCycle() has cleaning for the duty cycle already, so no cleaning needed here
+    int dutyCycle_Int = (int)(dutyCycle_Float/100 * this->pwm.MAX_DUTY_CYCLE);
+  if (this->dir == FORWARD){
+    this->pwm.updateDutyCycle(dutyCycle_Int, 0); //enable the forward pin
+    this->pwm.updateDutyCycle(0, 1); //disable the other pin
+  } else {
+    this->pwm.updateDutyCycle(0, 0); //enable the forward pin
+    this->pwm.updateDutyCycle(dutyCycle_Int, 1); //disable the other pin
+  }
+};//setPWM()
+
+void Motor::setDirection(Direction dir) {
+  //FORWARD and BACKWARD definitions are based on motor controller manufacturer
+  this->disable();//disable motor
+  this->dir = dir;//update stored motor direction in object
+  /*^^^ (needed because PWM pin changes depending on direction to keep BRAKE type consistant)
+  * see https://goodfilling.atlassian.net/l/cp/TmJou2ar PWM Control Block Diagram
+  */
+  if (dir == FORWARD){
+    cout << "ONWARDS, TO VICTORY" << endl;
+    this->pwm.updateDutyCycle(this->dutyCycle, 0); //enable the forward pin
+    this->pwm.updateDutyCycle(0, 1); //disable the other pin
+
+    //digitalWrite(this->In2Pin, LOW);
+  } else if (dir == BACKWARD) {
+    cout << "RETREAT" << endl;
+    //digitalWrite(this->In1Pin, LOW);
+    this->pwm.updateDutyCycle(this->dutyCycle, 1); //enable the backward pin
+    this->pwm.updateDutyCycle(0, 0); //diable the forward pin
+
+  }//else do nothing
+};//setDirection()
+
+void Motor::toggleDirection() {
+  this->disable();//disable motor
+  if (this->dir == FORWARD){
+    this->setDirection(BACKWARD);
+  } else {
+    this->setDirection(FORWARD);
+  }
+
+}
 
 #endif /* MOTOR_H */

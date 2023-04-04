@@ -11,27 +11,7 @@
 *      https://www.electronicshub.org/esp32-pwm-tutorial/
 *      https://learn.adafruit.com/improve-brushed-dc-motor-performance/choosing-decay-mode-and-pwm-frequency
 */
-#include "Motor.h"
-#include <algorithm>
-#include <math.h>
-
-class PWM {
-  public:
-    int PWMFreq; 
-    int PWMChannel;
-    int PWMResolution;
-    int MAX_DUTY_CYCLE;
-    PWM(int channel = 0, int freq = 50, int resolution = 10) {
-      PWMChannel = channel;//TODO: decide if this should be standardized to flip one of the bits (In1 for ex.) or should it change based on motor direction?
-      PWMFreq = freq; // default 50 hz (50)
-      PWMResolution = resolution; //bit resolution for PWM, up to 16 bits
-      MAX_DUTY_CYCLE = (int)(pow(2,resolution) - 1);
-      ledcSetup(PWMChannel, PWMFreq, PWMResolution);//initialize PWM on pin
-      ledcAttachPin(LEDPin, PWMChannel);        
-    }
-    void updateDutyCycle(int dutyCycle);
-    void print();
-};
+/*#include "Motor.h"
 
 void PWM::updateDutyCycle(int dutyCycle) {
   //TODO: deterimine where we would want to implement transform from percent duty cycle to PWMResolution-bit duty cycle
@@ -49,26 +29,6 @@ void PWM::print() {
     cout << "Resolution: " << this->PWMResolution << endl;
     cout << "Max Duty Cycle: " << this->MAX_DUTY_CYCLE << endl;
 }
-
-class Motor {
-  public:
-    Motor(int EP, int I1P, int I2P, PWM pwm_in) {
-      EnablePin = EP;
-      In1Pin = I1P;
-      In2Pin = I2P;
-      pwm = pwm_in;      
-    };//Motor Constructor
-    int EnablePin;
-    int In1Pin;
-    int In2Pin;
-    PWM pwm;
-    Direction dir;//holds pin data for motors, not hard coded/initialized here so it can be set/edited in main
-    void print();
-    void enable();
-    void disable();
-    void setPWM(float dutyCycle_Float);
-    void setDirection(Direction dir);
-};//class Motor    
 
 void Motor::print() {
     cout << "Enable Pin: " << this->EnablePin << endl;
@@ -103,7 +63,7 @@ void Motor::setDirection(Direction dir) {
   /*^^^ (needed because PWM pin changes depending on direction to keep BRAKE type consistant)
   * see https://goodfilling.atlassian.net/l/cp/TmJou2ar PWM Control Block Diagram
   */
-  if (dir == FORWARD){
+/*  if (dir == FORWARD){
     digitalWrite(this->In1Pin, HIGH);
     digitalWrite(this->In2Pin, LOW);
   } else if (dir == BACKWARD) {
@@ -112,5 +72,5 @@ void Motor::setDirection(Direction dir) {
   }//else do nothing
   this->enable();//reenable motor
 };//setDirection()
-
+*/
 
