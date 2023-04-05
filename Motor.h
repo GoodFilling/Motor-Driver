@@ -28,9 +28,8 @@ class PWM {
     int MAX_DUTY_CYCLE;
 
     PWM(int channel1 = 0, int channel2 = 1, int freq = 50, int resolution = 10) {
-      PWMChannel1 = channel1;//TODO: decide if this should be standardized to flip one of the bits (In1 for ex.) or should it change based on motor direction?
-      PWMChannel2 = channel2;//TODO: decide if this should be standardized to flip one of the bits (In1 for ex.) or should it change based on motor direction?
-
+      PWMChannel1 = channel1;
+      PWMChannel2 = channel2;
       PWMFreq = freq; // default 50 hz (50)
       PWMResolution = resolution; //bit resolution for PWM, up to 16 bits
       MAX_DUTY_CYCLE = (int)(pow(2,resolution) - 1);
@@ -46,7 +45,6 @@ class PWM {
 
 void PWM::updateDutyCycle(int dutyCycle) {
   //base function to set both duty cycles
-
   //clean duty cycle: between 0 and MAX_DUTY_CYCLE
   dutyCycle = min(max(dutyCycle,0), this->MAX_DUTY_CYCLE);
   ledcWrite(this->PWMChannel1, dutyCycle);
@@ -57,7 +55,6 @@ void PWM::updateDutyCycle(int dutyCycle) {
 
 void PWM::updateDutyCycle(int dutyCycle, int index) {
   //Overload to allow for indexing the 2 PWM signals
-
   //clean duty cycle: between 0 and MAX_DUTY_CYCLE
   dutyCycle = min(max(dutyCycle,0), this->MAX_DUTY_CYCLE);
   if (index == 0) {
@@ -65,7 +62,6 @@ void PWM::updateDutyCycle(int dutyCycle, int index) {
   } else {
     ledcWrite(this->PWMChannel2, dutyCycle);
   }
-
   cout << "Setting Duty Cycle "<< index <<  " to: " << dutyCycle << " of " << MAX_DUTY_CYCLE <<endl;
 };
 
@@ -74,8 +70,7 @@ void PWM::print() {
     cout << "Freq: " << this->PWMFreq << endl;
     cout << "Channel1: " << this->PWMChannel1 << endl;
     cout << "Channel1: " << this->PWMChannel2 << endl;
-
-    cout << "Resolution: " << this->PWMResolution << endl;
+    cout << "Resolution: " << this->PWMResolution << "bit"<< endl;
     cout << "Max Duty Cycle: " << this->MAX_DUTY_CYCLE << endl;
 }
 
@@ -94,7 +89,6 @@ class Motor {
       ledcAttachPin(In1Pin, pwm.PWMChannel1);
       ledcAttachPin(In2Pin, pwm.PWMChannel2);
     };//Motor Constructor
-
     void print();
     void enable();
     void disable();
@@ -125,7 +119,6 @@ void Motor::setPWM(float dutyCycle_Float = 100, bool updateDutyCycle = true) {
   //dutyCycle_Float is a float between 0.0 and 100.0 that controls the speed of the motor as a % duty cycle
   //pwm.updateDutyCycle() has cleaning for the duty cycle already, so no cleaning needed here
   int dutyCycle_Int = (int)(dutyCycle_Float/100 * this->pwm.MAX_DUTY_CYCLE);
-  
   if (updateDutyCycle) {
     this->dutyCycle = dutyCycle_Float;
   }
@@ -143,7 +136,6 @@ void Motor::setDirection(Direction dir) {
   this->disable();//disable motor
   this->dir = dir;//update stored motor direction in object
   usleep(1000000);//pause for 1 second for motor to stop
-
   /*^^^ (needed because PWM pin changes depending on direction to keep BRAKE type consistant)
   * see https://goodfilling.atlassian.net/l/cp/TmJou2ar PWM Control Block Diagram
   */
@@ -165,7 +157,6 @@ void Motor::toggleDirection() {
   } else {
     this->setDirection(FORWARD);
   }
-
 };//Motor::toggleDirection()
 
 #endif /* MOTOR_H */
