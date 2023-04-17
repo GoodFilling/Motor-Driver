@@ -14,6 +14,8 @@
 #include <iostream>
 using namespace std;
 #include <unistd.h>
+//#include "esp32-hal.h"
+
 
 enum Direction {
   FORWARD, BACKWARD
@@ -38,9 +40,13 @@ class PWM {
 
       //ledcAttachPin(LEDPin, PWMChannel); //Moved to motor constructor       
     }
+    ~PWM() {
+      this->updateDutyCycle(0);
+    }//PWM destructor - shouldn't need since no pointers or dynamically allocated memory, but it's here just in case
     void updateDutyCycle(int dutyCycle);
     void updateDutyCycle(int dutyCycle, int index);
     void print();
+
 };
 
 void PWM::updateDutyCycle(int dutyCycle) {
@@ -74,6 +80,7 @@ void PWM::print() {
     cout << "Max Duty Cycle: " << this->MAX_DUTY_CYCLE << endl;
 }
 
+
 class Motor {
   public:
     int In1Pin;
@@ -89,10 +96,16 @@ class Motor {
       ledcAttachPin(In1Pin, pwm.PWMChannel1);
       ledcAttachPin(In2Pin, pwm.PWMChannel2);
     };//Motor Constructor
+    ~Motor() {
+      this->pwm.~PWM();
+      ledcDetachPin(this->In1Pin);
+      ledcDetachPin(this->In2Pin);
+
+    }//Motor destructor - it should automatically destruct when it leaves scope, but keeping this here just in case we find we need it
     void print();
     void enable();
     void disable();
-    void setPWM(float dutyCycle_Float, bool updateDutyCycle);
+    void setPWM(float dutyCycle_Float);
     void setDirection(Direction dir);
     void toggleDirection();
 };//class Motor    
@@ -105,23 +118,9 @@ void Motor::print() {
 };//Motor::print()
 
 void Motor::enable() {
-  //turn on motor (wrapper function for setDirection)
-  this->setDirection(this->dir);  //use stored direction and pwm values to turn on motor
-};//Motor::enable()
+  //turn on motor
+  int dutyCycle_Int = (int)(this->dutyCycle/100 * this->pwm.MAX_DUTY_CYCLE);//convert duty cycle to N bit integer
 
-void Motor::disable() {
-  //disables the motor
-  this->pwm.updateDutyCycle(0); //set both duty cycles to 0
-};//Motor::disable()
-
-void Motor::setPWM(float dutyCycle_Float = 100, bool updateDutyCycle = true) {
-  //sets the PWM signal for the given motor.  
-  //dutyCycle_Float is a float between 0.0 and 100.0 that controls the speed of the motor as a % duty cycle
-  //pwm.updateDutyCycle() has cleaning for the duty cycle already, so no cleaning needed here
-  int dutyCycle_Int = (int)(dutyCycle_Float/100 * this->pwm.MAX_DUTY_CYCLE);
-  if (updateDutyCycle) {
-    this->dutyCycle = dutyCycle_Float;
-  }
   if (this->dir == FORWARD){
     this->pwm.updateDutyCycle(dutyCycle_Int, 0); //enable the forward pin
     this->pwm.updateDutyCycle(0, 1); //disable the other pin
@@ -129,6 +128,18 @@ void Motor::setPWM(float dutyCycle_Float = 100, bool updateDutyCycle = true) {
     this->pwm.updateDutyCycle(0, 0); //enable the forward pin
     this->pwm.updateDutyCycle(dutyCycle_Int, 1); //disable the other pin
   }
+};//Motor::enable()
+
+void Motor::disable() {
+  //disables the motor
+  this->pwm.updateDutyCycle(0); //disable both pins
+};//Motor::disable()
+
+void Motor::setPWM(float dutyCycle_Float = 100) {
+  //sets the PWM signal for the given motor.  
+  //dutyCycle_Float is a float between 0.0 and 100.0 that controls the speed of the motor as a % duty cycle
+  //pwm.updateDutyCycle() has cleaning for the duty cycle already, so no cleaning needed here
+  this->dutyCycle = dutyCycle_Float;
 };//Motor::setPWM()
 
 void Motor::setDirection(Direction dir) {
@@ -144,9 +155,9 @@ void Motor::setDirection(Direction dir) {
   } else if (dir == BACKWARD) {
     cout << "RETREAT" << endl;
   }//else if Backward
-  this->setPWM(100, false); //enable the forward pin at 100% duty cycle to ensure startup.  Do not overwrite motor's saved dutycycle
+  this->pwm.updateDutyCycle(100); //enable the PWM pin at 100% duty cycle to ensure startup.  Do not overwrite motor's saved dutycycle
   usleep(100000);//pause for 0.1 seconds for motor to start
-  this->setPWM(this->dutyCycle, false); //enable the forward pin at desired duty cycle
+  this->pwm.updateDutyCycle(this->dutyCycle); //enable the PWM pin at desired duty cycle
 
 };//Motor::setDirection()
 
