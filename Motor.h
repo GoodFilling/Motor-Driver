@@ -105,7 +105,7 @@ class Motor {
     void print();
     void enable();
     void disable();
-    void setPWM(float dutyCycle_Float);
+    void setPWM(int dutyCycle_perc);
     void setDirection(Direction dir);
     void toggleDirection();
 };//class Motor    
@@ -119,7 +119,7 @@ void Motor::print() {
 
 void Motor::enable() {
   //turn on motor
-  int dutyCycle_Int = (int)(this->dutyCycle/100 * this->pwm.MAX_DUTY_CYCLE);//convert duty cycle to N bit integer
+  int dutyCycle_Int = (int)(((float)this->dutyCycle/100) * this->pwm.MAX_DUTY_CYCLE);//convert duty cycle to N bit integer
 
   if (this->dir == FORWARD){
     this->pwm.updateDutyCycle(dutyCycle_Int, 0); //enable the forward pin
@@ -135,11 +135,10 @@ void Motor::disable() {
   this->pwm.updateDutyCycle(0); //disable both pins
 };//Motor::disable()
 
-void Motor::setPWM(float dutyCycle_Float = 100) {
+void Motor::setPWM(int dutyCycle_perc = 100) {
   //sets the PWM signal for the given motor.  
   //dutyCycle_Float is a float between 0.0 and 100.0 that controls the speed of the motor as a % duty cycle
-  this->dutyCycle = dutyCycle_Float;
-  this->pwm.updateDutyCycle( (int)(dutyCycle_Float/100 * this->pwm.MAX_DUTY_CYCLE));
+  this->dutyCycle = dutyCycle_perc;
 };//Motor::setPWM()
 
 void Motor::setDirection(Direction dir) {
