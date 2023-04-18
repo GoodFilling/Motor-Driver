@@ -1,7 +1,5 @@
 *.vscode/*
-*8BaseFunctions/goodfilling/.build/*
 WifiCredentials.h
-*8BaseFunctions/goodfilling/node_modules/*
 *package-lock.json
 *.workspace.json
 *credentials.ts
