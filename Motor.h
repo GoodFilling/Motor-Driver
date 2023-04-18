@@ -138,8 +138,8 @@ void Motor::disable() {
 void Motor::setPWM(float dutyCycle_Float = 100) {
   //sets the PWM signal for the given motor.  
   //dutyCycle_Float is a float between 0.0 and 100.0 that controls the speed of the motor as a % duty cycle
-  //pwm.updateDutyCycle() has cleaning for the duty cycle already, so no cleaning needed here
   this->dutyCycle = dutyCycle_Float;
+  this->pwm.updateDutyCycle( (int)(dutyCycle_Float/100 * this->pwm.MAX_DUTY_CYCLE));
 };//Motor::setPWM()
 
 void Motor::setDirection(Direction dir) {
