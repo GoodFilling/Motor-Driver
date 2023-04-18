@@ -9,20 +9,20 @@ int percPWM = 0;
 int i = 0;
 
 //initialize 4 PWM and 4 Motors
-PWM pwm1 = PWM(0, 1, 50, 10);
+/*PWM pwm1 = PWM(0, 1, 50, 10);
 Motor motor1 = Motor(2, 1, pwm1);
 PWM pwm2 = PWM(2, 3, 50, 10);
 Motor motor2 = Motor(41, 42, pwm2);
 PWM pwm3 = PWM(4, 5, 50, 10);
-Motor motor3 = Motor(39, 40, pwm3);
+Motor motor3 = Motor(39, 40, pwm3);*/
 PWM pwm4 = PWM(6, 7, 50, 10);
-Motor motor4 = Motor(37, 38, pwm4);
-//Motor motors[4] = {motor1, motor2, motor3, motor4};//delete array
-int numPumps = 4;
+Motor motor1 = Motor(37, 38, pwm4);
+Motor motor;
+int numPumps = 1;
 
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(9600);
+  Serial.begin(115200);
   /*for (i=0; i<motors.length(); i++) {
     motors[i].print();
     motors[i].setDirection(FORWARD);
@@ -40,15 +40,16 @@ void setup() {
 
   */
 
-  for (int i = 0; i < numPumps; i++) {
+  //How to iterate through all pins - example of how pins are indexed
+  /*for (int i = 0; i < numPumps; i++) {
     for (int j = IN1; j != TERMINATE; j++) {
       PinType pintype = static_cast<PinType>(j);
       cout << "pump #" << i+1 << " , enumInd: " << j << " pin Value: " << FetchMappedPin(i, pintype).PinNumber << endl;
     }
-  }
+  }*/
 
 
-
+  //another way to iterate through all pins
   /*for (int k = 0; k<20; k++) {
     int i = (int) k/5;
     int j = k%5;
@@ -68,24 +69,22 @@ void loop() {
     cout<<"switch1 Low"<<endl;
   }
   cout<<i<<endl;
-
+  */
   if (Serial.available()){
     int temp = Serial.peek();
     
     if (temp == 66) { //"B"
-      motor4.setDirection(BACKWARD);
+      motor.setDirection(BACKWARD);
       float trash = Serial.parseFloat();
-
     } else if (temp == 70) { //"F"
-      motor4.setDirection(FORWARD);
+      motor.setDirection(FORWARD);
       float trash = Serial.parseFloat();
-      
     } else {
       percPWM = Serial.parseFloat();
       cout << "Setting PWM: " << percPWM << "%"<< endl;
-      motor4.setPWM(percPWM);
+      motor.setPWM(percPWM);
     }
-  }*/
+  }
 }
 
 void flowmeter() {

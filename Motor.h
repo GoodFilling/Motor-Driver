@@ -88,7 +88,7 @@ class Motor {
     PWM pwm;
     Direction dir;//holds pin data for motors, not hard coded/initialized here so it can be set/edited in main
     float dutyCycle;
-    Motor(int I1P, int I2P, PWM pwm_in) {
+    Motor(int I1P = NULL, int I2P = NULL, PWM pwm_in = NULL) {
       In1Pin = I1P;
       In2Pin = I2P;
       pwm = pwm_in;
