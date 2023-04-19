@@ -38,6 +38,5 @@ WifiCredentials.h
 *.exe
 *.out
 *.app
-Motor.ino
 PinMap.cpp
 PinMap.h
