@@ -36,6 +36,7 @@ void Motor::print() {
 }//Motor::print()
 
 void Motor::enable() {
+  isMotorEnabled = true;
   // std::cout << "motor enable" << std::endl;
   //turn on motor
   int dutyCycle_Int = (int)(((float)this->dutyCycle/100) * this->pwm.MAX_DUTY_CYCLE);//convert duty cycle to N bit integer
@@ -50,6 +51,7 @@ void Motor::enable() {
 }//Motor::enable()
 
 void Motor::disable() {
+  isMotorEnabled = false;
   // std::cout << "motor disable" << std::endl;
   //disables the motor
   this->pwm.updateDutyCycle(0); //disable both pins
