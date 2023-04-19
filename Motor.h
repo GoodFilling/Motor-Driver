@@ -28,6 +28,7 @@ class Motor {
     // ~Motor();
     int In1Pin;
     int In2Pin;
+    bool isMotorEnabled = false;
     Direction dir;//holds pin data for motors, not hard coded/initialized here so it can be set/edited in main
     float dutyCycle;
     void print();
