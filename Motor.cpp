@@ -44,8 +44,8 @@ void Motor::enable() {
     this->pwm.updateDutyCycle(dutyCycle_Int, 0); //enable the forward pin
     this->pwm.updateDutyCycle(0, 1); //disable the other pin
   } else {
-    this->pwm.updateDutyCycle(0, 0); //enable the forward pin
-    this->pwm.updateDutyCycle(dutyCycle_Int, 1); //disable the other pin
+    this->pwm.updateDutyCycle(0, 0); //disable the forward pin
+    this->pwm.updateDutyCycle(dutyCycle_Int, 1); //enable the other pin
   }
 }//Motor::enable()
 
@@ -59,7 +59,7 @@ void Motor::setPWM(int dutyCycle_perc = 100) {
   //sets the PWM signal for the given motor.  
   //dutyCycle_Float is a float between 0.0 and 100.0 that controls the speed of the motor as a % duty cycle
   this->dutyCycle = (float)dutyCycle_perc;
-  std::cout << "We set the PWM!!!" << std::endl;
+  std::cout << "DutyCycle%: "<< dutyCycle_perc << std::endl;
 }//Motor::setPWM()
 
 void Motor::setDirection(Direction dir) {
