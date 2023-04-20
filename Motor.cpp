@@ -12,6 +12,7 @@ Motor::Motor(){
 
 Motor::Motor(int I1P, int I2P, int pwmChannel1, int pwmChannel2) {
   std::cout << "motor con" << std::endl;
+  log("Motor Constructor");
   In1Pin = I1P;
   In2Pin = I2P;
   this->pwm = PWM(pwmChannel1, pwmChannel2, 50, 10);
@@ -62,10 +63,12 @@ void Motor::setPWM(int dutyCycle_perc = 100) {
   //dutyCycle_Float is a float between 0.0 and 100.0 that controls the speed of the motor as a % duty cycle
   this->dutyCycle = (float)dutyCycle_perc;
   std::cout << "DutyCycle%: "<< dutyCycle_perc << std::endl;
+  log("DutyCycle%%: %i", dutyCycle_perc);
 }//Motor::setPWM()
 
 void Motor::setDirection(Direction dir) {
-    std::cout << "motor set direction" << std::endl;
+  std::cout << "motor set direction" << std::endl;
+  log("Motor Set Direction");
   //FORWARD and BACKWARD definitions are based on motor controller manufacturer
   this->disable();//disable motor
   this->dir = dir;//update stored motor direction in object

@@ -6,6 +6,8 @@ PWM::PWM(){
 
 PWM::PWM(int channel1 = 0, int channel2 = 1, int freq = 50, int resolution = 10) {
       std::cout << "PWM con" << std::endl;
+      log("PWM Constructor");
+
       PWMChannel1 = channel1;
       PWMChannel2 = channel2;
       PWMFreq = freq; // default 50 hz (50)
@@ -30,7 +32,8 @@ void PWM::updateDutyCycle(int dutyCycle) {
   ledcWrite(this->PWMChannel1, dutyCycle);
   ledcWrite(this->PWMChannel2, dutyCycle);
 
-//   std::cout << "Setting Duty Cycle to: " << dutyCycle << " of " << MAX_DUTY_CYCLE <<std::endl;
+  std::cout << "Setting Duty Cycle to: " << dutyCycle << " of " << MAX_DUTY_CYCLE <<std::endl;
+  log("Setting Duty Cycle to %i of %i", dutyCycle, MAX_DUTY_CYCLE);
 }
 
 void PWM::updateDutyCycle(int dutyCycle, int index) {
@@ -42,7 +45,8 @@ void PWM::updateDutyCycle(int dutyCycle, int index) {
   } else {
     ledcWrite(this->PWMChannel2, dutyCycle);
   }
-//   std::cout << "Setting Duty Cycle "<< index <<  " to: " << dutyCycle << " of " << MAX_DUTY_CYCLE <<std::endl;
+  std::cout << "Setting Duty Cycle "<< index <<  " to: " << dutyCycle << " of " << MAX_DUTY_CYCLE <<std::endl;
+  log("Setting Duty Cycle %i to %i of %i", index, dutyCycle, MAX_DUTY_CYCLE);
 }
 
 

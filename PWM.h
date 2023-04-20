@@ -5,6 +5,21 @@
 #include <iostream>
 #include <algorithm>
 
+#ifndef DEBUG 
+#define DEBUG true // set debug mode
+#endif
+
+#if DEBUG
+#define log(args...) {\
+  char str[100];\
+  int n= sprintf(str, args);\
+  std::cout << str<< std::endl;\
+  }
+#else
+#define log(...)//no log
+#endif
+
+
 class PWM {
   public:
     PWM();
