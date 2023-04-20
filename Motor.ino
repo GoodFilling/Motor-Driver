@@ -23,11 +23,9 @@ void setup() {
   /*for (i=0; i<motors.length(); i++) {
     motors[i].print();
     motors[i].setDirection(FORWARD);
-    std::cout << "Setting PWM: " << percPWM << "%"<< std::endl;
     motors[i].setPWM(percPWM);//set pwm to 0 as a percent
   }
 
-  std::cout <<"setting pin 5 high" << std::endl;
   pinMode(5, OUTPUT);//LED1
   digitalWrite(5, HIGH);
   pinMode(4, INPUT);//Button1
@@ -61,11 +59,10 @@ void loop() {
   //serial input code:
   /*int button1 = digitalRead(4);
   if (button1==HIGH) {
-    std::cout<<"switch1 High"<<std::endl;
+    log("Switch1 High");
   } else {
-    std::cout<<"switch1 Low"<<std::endl;
+    log("Switch1 Low");
   }
-  std::cout<<i<<std::endl;
   */
   if (Serial.available()){
     int temp = Serial.peek();
@@ -82,9 +79,11 @@ void loop() {
     } else if (temp == 69) { //"E"
       motor.enable();
       float trash = Serial.parseFloat();
-    }else {
+    } else if (temp == 80) { //"P"
+      motor.print();
+      float trash = Serial.parseFloat();
+    } else {
       percPWM = Serial.parseFloat();
-      std::cout << "Setting PWM: " << percPWM << "%"<< std::endl;
       motor.setPWM(percPWM);
     }
   }

@@ -11,7 +11,6 @@ Motor::Motor(){
 }
 
 Motor::Motor(int I1P, int I2P, int pwmChannel1, int pwmChannel2) {
-  std::cout << "motor con" << std::endl;
   log("Motor Constructor");
   In1Pin = I1P;
   In2Pin = I2P;
@@ -22,7 +21,7 @@ Motor::Motor(int I1P, int I2P, int pwmChannel1, int pwmChannel2) {
 }//Motor Constructor
 
 // Motor::~Motor() {
-//   std::cout << "motor destructor" << std::endl;
+//   log("Motor Destructor");
 //   //pwm.~PWM();
 //   ledcDetachPin(this->In1Pin);
 //   ledcDetachPin(this->In2Pin);
@@ -30,15 +29,16 @@ Motor::Motor(int I1P, int I2P, int pwmChannel1, int pwmChannel2) {
 // }//Motor destructor - it should automatically destruct when it leaves scope, but keeping this here just in case we find we need it
 
 void Motor::print() {
-    std::cout << "In1Pin: " << this->In1Pin << std::endl;
-    std::cout << "In2Pin " << this->In2Pin << std::endl;
-    std::cout << "Direction " << this->dir << std::endl;
-    pwm.print();
+  //int dir = this->dir;
+  log("In1Pin: %i", this->In1Pin);
+  log("In2Pin: %i", this->In2Pin);
+  log("Direction: %i  (Forward = 0, Backward = 1)", this->dir);
+  pwm.print();
 }//Motor::print()
 
 void Motor::enable() {
   isMotorEnabled = true;
-  // std::cout << "motor enable" << std::endl;
+  log("Motor Enable");
   //turn on motor
   int dutyCycle_Int = (int)(((float)this->dutyCycle/100) * this->pwm.MAX_DUTY_CYCLE);//convert duty cycle to N bit integer
 
@@ -53,7 +53,7 @@ void Motor::enable() {
 
 void Motor::disable() {
   isMotorEnabled = false;
-  // std::cout << "motor disable" << std::endl;
+  log("Motor Disable");
   //disables the motor
   this->pwm.updateDutyCycle(0); //disable both pins
 }//Motor::disable()
@@ -62,12 +62,10 @@ void Motor::setPWM(int dutyCycle_perc = 100) {
   //sets the PWM signal for the given motor.  
   //dutyCycle_Float is a float between 0.0 and 100.0 that controls the speed of the motor as a % duty cycle
   this->dutyCycle = (float)dutyCycle_perc;
-  std::cout << "DutyCycle%: "<< dutyCycle_perc << std::endl;
   log("DutyCycle%%: %i", dutyCycle_perc);
 }//Motor::setPWM()
 
 void Motor::setDirection(Direction dir) {
-  std::cout << "motor set direction" << std::endl;
   log("Motor Set Direction");
   //FORWARD and BACKWARD definitions are based on motor controller manufacturer
   this->disable();//disable motor
@@ -76,9 +74,9 @@ void Motor::setDirection(Direction dir) {
   /*^^^ (needed because PWM pin changes depending on direction to keep BRAKE type consistant)
   */
   if (dir == FORWARD){
-    std::cout << "ONWARDS, TO VICTORY" << std::endl;
+    log("ONWARDS, TO VICTORY");
   } else if (dir == BACKWARD) {
-    std::cout << "RETREAT" << std::endl;
+    log("RETREAT");
   }
 }//Motor::setDirection()
 

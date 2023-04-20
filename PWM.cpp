@@ -5,7 +5,6 @@ PWM::PWM(){
 }
 
 PWM::PWM(int channel1 = 0, int channel2 = 1, int freq = 50, int resolution = 10) {
-      std::cout << "PWM con" << std::endl;
       log("PWM Constructor");
 
       PWMChannel1 = channel1;
@@ -21,7 +20,7 @@ PWM::PWM(int channel1 = 0, int channel2 = 1, int freq = 50, int resolution = 10)
 
 // PWM::~PWM()
 // {
-//     std::cout << "PWM destructor" << std::endl;
+//     log("PWM Destructor");
 //     //this->updateDutyCycle(0);
 // }
 
@@ -32,7 +31,6 @@ void PWM::updateDutyCycle(int dutyCycle) {
   ledcWrite(this->PWMChannel1, dutyCycle);
   ledcWrite(this->PWMChannel2, dutyCycle);
 
-  std::cout << "Setting Duty Cycle to: " << dutyCycle << " of " << MAX_DUTY_CYCLE <<std::endl;
   log("Setting Duty Cycle to %i of %i", dutyCycle, MAX_DUTY_CYCLE);
 }
 
@@ -45,15 +43,14 @@ void PWM::updateDutyCycle(int dutyCycle, int index) {
   } else {
     ledcWrite(this->PWMChannel2, dutyCycle);
   }
-  std::cout << "Setting Duty Cycle "<< index <<  " to: " << dutyCycle << " of " << MAX_DUTY_CYCLE <<std::endl;
   log("Setting Duty Cycle %i to %i of %i", index, dutyCycle, MAX_DUTY_CYCLE);
 }
 
 
 void PWM::print() {
-    std::cout << "Freq: " << this->PWMFreq << std::endl;
-    std::cout << "Channel1: " << this->PWMChannel1 << std::endl;
-    std::cout << "Channel1: " << this->PWMChannel2 << std::endl;
-    std::cout << "Resolution: " << this->PWMResolution << "bit"<< std::endl;
-    std::cout << "Max Duty Cycle: " << this->MAX_DUTY_CYCLE << std::endl;
+    log("PWM Frequency: %i Hz", this->PWMFreq);
+    log("PWM Channel1: %i", this->PWMChannel1);
+    log("PWM Channel2: %i", this->PWMChannel2);
+    log("PWM Resolution: %i bit", this->PWMResolution);
+    log("PWM Max Duty Cycle: %i", this->MAX_DUTY_CYCLE);
 }
