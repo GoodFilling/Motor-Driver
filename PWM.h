@@ -6,7 +6,7 @@
 #include <algorithm>
 
 #ifndef DEBUG 
-#define DEBUG true // set debug mode
+#define DEBUG false // set debug mode
 #endif
 
 #if DEBUG
