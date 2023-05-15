@@ -40,7 +40,7 @@ void Motor::enable() {
   isMotorEnabled = true;
   log("Motor Enable");
   //turn on motor
-  int dutyCycle_Int = (int)(((float)this->dutyCycle/100) * this->pwm.MAX_DUTY_CYCLE);//convert duty cycle to N bit integer
+  int dutyCycle_Int = (int)((this->dutyCycle/100) * this->pwm.MAX_DUTY_CYCLE);//convert duty cycle to N bit integer
 
   if (this->dir == FORWARD){
     this->pwm.updateDutyCycle(dutyCycle_Int, 0); //enable the forward pin
