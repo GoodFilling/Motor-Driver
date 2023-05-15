@@ -14,7 +14,7 @@ Motor::Motor(int I1P, int I2P, int pwmChannel1, int pwmChannel2) {
   log("Motor Constructor");
   In1Pin = I1P;
   In2Pin = I2P;
-  this->pwm = PWM(pwmChannel1, pwmChannel2, 50, 10);
+  this->pwm = PWM(pwmChannel1, pwmChannel2, 10, 12);
   dir = FORWARD;
   ledcAttachPin(In1Pin, this->pwm.PWMChannel1);
   ledcAttachPin(In2Pin, this->pwm.PWMChannel2);
