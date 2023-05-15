@@ -14,7 +14,7 @@ PWM pwm2 = PWM(2, 3, 50, 10);
 Motor motor2 = Motor(41, 42, pwm2);
 PWM pwm3 = PWM(4, 5, 50, 10);
 Motor motor3 = Motor(39, 40, pwm3);*/
-Motor motor = Motor(2, 1, 0 ,1);
+Motor motor = Motor(2, 1, 0, 1);
 int numPumps = 1;
 
 void setup() {
@@ -85,6 +85,8 @@ void loop() {
     } else {
       percPWM = Serial.parseFloat();
       motor.setPWM(percPWM);
+      motor.enable();
+
     }
   }
 }

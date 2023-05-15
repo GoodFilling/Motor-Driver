@@ -4,12 +4,12 @@ PWM::PWM(){
     PWM(0, 1, 50, 10);
 }
 
-PWM::PWM(int channel1 = 0, int channel2 = 1, int freq = 50, int resolution = 10) {
+PWM::PWM(int channel1 = 0, int channel2 = 1, int freq = 10, int resolution = 12) {
       log("PWM Constructor");
 
       PWMChannel1 = channel1;
       PWMChannel2 = channel2;
-      PWMFreq = freq; // default 50 hz (50)
+      PWMFreq = freq; // default 10 hz (10)
       PWMResolution = resolution; //bit resolution for PWM, up to 16 bits
       MAX_DUTY_CYCLE = (int)(pow(2,resolution) - 1);
       ledcSetup(PWMChannel1, PWMFreq, PWMResolution);//initialize PWM on pin
