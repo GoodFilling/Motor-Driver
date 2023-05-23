@@ -20,6 +20,7 @@ int numPumps = 1;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
+  Serial.println("Hello World");
   /*for (i=0; i<motors.length(); i++) {
     motors[i].print();
     motors[i].setDirection(FORWARD);
