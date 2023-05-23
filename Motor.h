@@ -37,7 +37,7 @@ class Motor {
     void setPWM(int dutyCycle_perc);
     void setDirection(Direction dir);
     void toggleDirection();
-    bool detach();
+    void detach();
 
   private:
     PWM pwm;
