@@ -28,6 +28,12 @@ Motor::Motor(int I1P, int I2P, int pwmChannel1, int pwmChannel2) {
 
 // }//Motor destructor - it should automatically destruct when it leaves scope, but keeping this here just in case we find we need it
 
+bool Motor::detach() {
+  ledcDetachPin(this->In1Pin);
+  ledcDetachPin(this->In2Pin);
+  dir = FORWARD;
+}
+
 void Motor::print() {
   //int dir = this->dir;
   log("In1Pin: %i", this->In1Pin);
