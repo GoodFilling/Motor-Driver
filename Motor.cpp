@@ -2,6 +2,7 @@
 * Motor.cpp
 *
 *  Created on: Jan 5, 2023
+*  Updated on: Sept 7, 2023
 *      Author: Chris Hanes for Good Filling LLC.
 */
 #include "Motor.h"
@@ -20,13 +21,6 @@ Motor::Motor(int I1P, int I2P, int pwmChannel1, int pwmChannel2) {
   ledcAttachPin(In2Pin, this->pwm.PWMChannel2);
 }//Motor Constructor
 
-// Motor::~Motor() {
-//   log("Motor Destructor");
-//   //pwm.~PWM();
-//   ledcDetachPin(this->In1Pin);
-//   ledcDetachPin(this->In2Pin);
-
-// }//Motor destructor - it should automatically destruct when it leaves scope, but keeping this here just in case we find we need it
 
 void Motor::detach() {
   try {
