@@ -10,14 +10,19 @@ DISCLAIMER: This is a work in progress. Changes are frequent and not guaranteed 
 This library was written specifically for the DRV8251, but it may work with other motor drivers, as well. Refer to the documentation provided by Texas Instruments for details on the DRV8251 (https://www.ti.com/lit/ds/symlink/drv8251.pdf) and to adapt this library to the specifics of your motor driver.
 
 Initialize the motor driver as follows:
-``` Motor motor = Motor(IN1, IN2, PWM Channel 1, PWM Channel 2); ```
-
-Here, IN1 and IN2 are the logical input pins defined in the DRV8251 documentation. 
-
-Enable or disable the motor:
-``` motor.enable();
-    motor.disable(); 
 ```
+Motor motor = Motor(IN1, IN2, Channel1, Channel2);
+```
+
+IN1 and IN2 are the pins that are used to interface with a motor driver (TI's DRV8251). The names line up with the pin-in from this chip.
+
+Channel1 and Channel2 are integers corresponding to the PWM channel you want to attach (ESP32s have 16 independent PWM channels labeled 0-15).
+
+Disable the motor:
+``` motor.disable(); ```
+
+Enable the motor:
+```motor.enable();```
 
 Set or toggle direction:
 ``` motor.setDirection(BACKWARD);
@@ -30,5 +35,3 @@ Set PWM Duty Cycle:
 
 Detach PWM signal from pins - prevents multiple motors being run:
 ``` motor.detach(); ```
-
-
