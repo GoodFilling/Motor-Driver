@@ -29,11 +29,11 @@ Set PWM Duty Cycle:
 ``` motor.setPWM(duty cycle); ```
 
 Detach PWM signal from pins - prevents multiple motors being run:
-``` motor.detach();```
+``` motor.detach(); ```
 
 
 
-MIT License
+## MIT License
 
 Copyright (c) 2023 Good Filling LLC
 
