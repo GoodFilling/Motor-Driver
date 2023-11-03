@@ -86,8 +86,6 @@ void loop() {
     } else {
       percPWM = Serial.parseFloat();
       motor.setPWM(percPWM);
-      motor.enable();
-
     }
   }
 }
